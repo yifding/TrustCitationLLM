@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "layout.html" %}
+{% block content %}
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Testing</title>
+</head>
+<body>
+    <!-- <h1>ChatGPT Testing</h1> -->
+    <form action="/" method="post">
+        <!-- <label for="user_input">User Input:</label> -->
+        <!-- <td colspan="3"> User Input<br> 
+            <textarea name="user_input" cols="50" rows="4">
+            </textarea> -->
+        <div class="form-group">
+            {{ form.user_input.label(class="form-control-label") }}
+
+            {% if form.user_input.errors %}
+                {{ form.user_input(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.user_input.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.user_input(class="form-control form-control-lg mb-2") }}
+            {% endif %}
+                {{ form.submit(class="btn btn-info" ) }}
+            </div>
+            <!-- <div align="left"> 
+                <input type="submit" name="submit" value="Submit"> 
+                <input type="reset" name="reset" value="Reset"> 
+            </div>  -->
+        </td>
+        <!-- <button type="submit">Ask ChatGPT</button>
+        <input type="reset" name="Reset" value="Reset"> -->
+    </form>
+    
+    <!-- {% if form.user_input.label %}
+        <p><strong>User:</strong> {{ form.user_input }}</p>
+    {% endif %} -->
+
+    {% if chatgpt_reply %}
+        <p><strong>ChatGPT:</strong> <br> {{ chatgpt_reply }}</p> <br>
+        {% for instance in instances %}
+        <p class="article-content">{{ instance }}</p>
+        {% endfor %}
+    {% endif %}
+
+</body>
+</html>
+{% endblock content %}
