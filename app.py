@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 import sys
 import json
 import uuid
+import time
 import random
 import openai
 import requests
@@ -20,7 +21,6 @@ openai.api_key = "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"
 scaleserp_api_key='902001EE928446608F1DFDA760750BFC',
 
 MAX_QUESTION_NUM = 10
-RATING = -1
 """
 class User(db.Model):
 """
@@ -28,7 +28,7 @@ class User(db.Model):
 class QuestionAnswer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(20))
-    user_score = db.Column(db.Integer)
+    rating = db.Column(db.Integer)
     question = db.Column(db.Text, nullable=False)
     answer = db.Column(db.Text, nullable=False)
     qa_number = db.Column(db.Integer)
@@ -41,8 +41,11 @@ class QuestionAnswer(db.Model):
 
 class Citation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    sentence_index = db.Column(db.Integer, nullable=False)
     hyperlink = db.Column(db.Text, nullable=False)
     qa_id = db.Column(db.Integer, db.ForeignKey('question_answer.id'), nullable=False)
+
+db.create_all()
 
 
 def add_citation(text):
@@ -80,15 +83,60 @@ def add_citation(text):
                 tmp_link_index += 1
         links_list.append(links)
 
-    return chunck_list, sentences, links_list
+    return tmp_link_index, chunck_list, sentences, links_list
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route("/", methods=['GET', 'POST'])
+@app.route("/home", methods=['GET', 'POST'])
+def home():
+    return render_template('home.html')
+
+@app.route("/consent", methods=['GET', 'POST'])
+def consent():
+    return render_template('consent.html')
+
+# @app.route("/", methods=['GET', 'POST'])
+@app.route('/ask', methods=['GET', 'POST'])
 def ask():
+    print('a')
     ask_form = AskForm() 
-    chatgpt_reply = ''
+    print(ask_form)
+    print(request.method)
     # if request.method == 'POST' and ask_form.validate_on_submit():
-    if request.method == 'POST' and ask_form.user_input.data:
+    if request.method == 'POST' and ask_form.validate_on_submit() and ask_form.rating.data:
+        print('b')
+        session['user_time'] = time.time()
+        # TODO: db to collect all the data.
+        # stats the citation number.
+
+        question_answer = QuestionAnswer(
+            user_id=str(session['user_id']),
+            rating=ask_form.rating.data,
+            question=session['user_input'],
+            answer=' '.join(session['sentences']),
+            qa_number=session['question_num'],
+            num_citations=session['num_citations'],
+            start_time=session['start_time'],
+            gpt_time_elapsed=session['chatgpt_time'] - session['start_time'],
+            user_time_elapsed=session['user_time'] - session['chatgpt_time'],
+        )
+
+        db.session.add(question_answer)
+        db.session.commit()
+
+        for sentence_index, (_, links) in enumerate(zip(session['sentences'], session['links_list'])):
+            for link in links:
+                citation = Citation(
+                    sentence_index=sentence_index,
+                    hyperlink=link[1],
+                    qa=question_answer,
+                )
+                db.session.add(citation)
+                db.session.commit()
+        flash('Your response has been collected!', 'success')
+        return redirect(url_for('ask'))
+
+    elif request.method == 'POST' and ask_form.validate_on_submit() and ask_form.user_input.data:
         user_input = ask_form.user_input.data
         # You can customize the prompt or instructions based on your use case
         prompt = f"User: {user_input}\nChatGPT:"
@@ -99,74 +147,38 @@ def ask():
             prompt=prompt,
             max_tokens=150,
         )
-        # test rating
-        # rating = ask_form.rating.data
-        # print(f'MMP rating: {rating}')
 
         # Extract the model's reply from the API response
         chatgpt_reply = response.choices[0].text.strip()
 
         # Add citations.
-        chunck_list, sentences, links_list = add_citation(chatgpt_reply)
-        # chatgpt_reply = zip(sentences, links_list)
+        num_citations, chunck_list, sentences, links_list = add_citation(chatgpt_reply)
 
-        # return render_template('index.html', form=ask_form, chatgpt_reply=chatgpt_reply, links_list=links_list)
-        # print(f'sentences: {sentences}')
-        # print(f'links_list: {links_list}')
-        return redirect(url_for('collect', user_input=user_input, sentences=sentences, links_list=links_list))
+        session['chatgpt_time'] = time.time()
+        # chatgpt_reply = zip(sentences, links_list)
+        chatgpt_reply=zip(sentences, links_list)
+
+        # store intermediate variables as session variables
+        session['num_citations'] = num_citations - 1
+        session['user_input'] = user_input
+        session['sentences'] = sentences
+        session['links_list'] = links_list
+
+        # return render_template('collect.html', user_input=user_input, sentences=sentences, links_list=links_list)
+        return render_template('collect.html', form=ask_form, user_input=user_input, chatgpt_reply=chatgpt_reply, links_list=links_list)
+
     else:
         # check user_id existing in the session variables
-        
         user_id = session.get('user_id', '')
         if user_id == '':
             session['user_id'] = uuid.uuid4()
             session['question_num'] = 1
-            print(f"session['question_num']: {session['question_num']}")
-
         else:
             session['question_num'] += 1
-            rating = request.args.get('rating', -1)
-            # TODO: store the data in db
-            print(f"session['question_num']: {session['question_num']}")
-            print(f"session['rating']: {rating}")
 
-        print(f"RATING: {RATING}")
-        print(f"session['question_num']: {session['question_num']}")
-        return render_template('index.html', form=ask_form, chatgpt_reply=chatgpt_reply)
+        session['start_time'] = time.time()
+        return render_template('index.html', form=ask_form)
 
-
-@app.route('/collect', methods=['GET', 'POST'])
-def collect():
-    user_input = request.args.get('user_input')
-    sentences = request.args.getlist('sentences')
-    links_list = request.args.getlist('links_list')
-    new_links_list = []
-    # list of list has some problems
-    for links in links_list:
-        new_links_list.append(eval(links))
-    links_list = new_links_list
-    if len(sentences) == 1:
-        links_list = [links_list]
-    # print(f'user_input: {user_input}')
-    # print(f'sentences: {sentences}')
-    # print(f'links_list: {links_list}')
-    # function to collect user response on question_answer.
-    collect_form = CollectForm()
-    # if request.method == 'POST' and collect_form.rating.data:
-    if request.method == 'POST':
-        rating = collect_form.rating.data
-        RATING = rating
-        # TODO: db to store data
-        # session['rating'] = rating
-        # print(f'rating: {rating}', file=sys.stdout)
-        # print(f"rating: {session['question_num']}", file=sys.stdout)
-        # return redirect(url_for('ask'))'
-        flash('Your post has been deleted!', 'success')
-        return render_template('collect.html')
-    else:
-        chatgpt_reply=zip(sentences, links_list)
-        # flash('chatgpt response make up !', 'info')
-        return render_template('collect.html', form=collect_form, user_input=user_input, chatgpt_reply=chatgpt_reply, links_list=links_list)
 
 if __name__ == '__main__':
     app.run(debug=True)

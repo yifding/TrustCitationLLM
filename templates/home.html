@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2><strong>Verifying and Annotating Articles with Entities</strong></h2>
+            <br>
+            <h3><u>Description</u></h3>
+            <h4>In this HIT assignment you will be shown short pieces of text drawn from news articles and other
+                online sources. Some of the words will be highlighted already indicating the highlighted text maps
+                to a particular Wikipedia article. Your task will consist of two parts. First, to verify that the
+                Wikipedia article mapped to is correct. The second is to highlight new portions of text that you
+                believe should map to a Wikipedia Article. By participating, you will be helping research into
+                understanding online discourse.
+
+            </h4>
+            <br>
+            <h3><u>Length</u></h3>
+            <h4>There are 10 questions in this HIT assignment, each group will take around 1 to 3 minutes to complete.
+            </h4>
+            <br>
+            <h3><u>Completion</u></h3>
+            <h4>When the end of the HIT assignment has been reached, a unique survey code will be provided to you.
+                This survey code should be submitted to the Mechanical Turk HIT page which provided the link to this HIT assignment.
+            </h4>
+            <br>
+            <h3><u>Approval Criteria</u></h3>
+            <h4>During the HIT assignment control questions will be presented throughout.
+                By correctly verifying and annotating the control questions you will ensure that your HIT is approved.
+                <b>You must correctly answer some of the control questions to receive approval for completing this HIT assignment.</b>
+            </h4>
+            <br>
+            <h3><u>Rejection Criteria</u></h3>
+            <h4>Multiple submissions of an identical survey code. Too many incorrect annotations on the control questions.
+            </h4>
+        </div>
+    </div>
+</div>
+
+<br>
+<ul class="list-group">
+    <a id="next" href="{{ url_for('consent') }}" class="list-group-item list-group-item-action text-middle" style="font-size: xx-large"> ---> Consent <span class="fa fa-arrow-right"></span></a>
+</ul>
+
+{% endblock %}
