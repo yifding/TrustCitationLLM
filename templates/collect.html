@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "layout.html" %}
+{% block content %}
+
+<p><strong>User Input:</strong> </p>
+<p> {{user_input}} </p>
+<p><strong>ChatGPT:</strong> </p>
+{% for sentence, links in chatgpt_reply %}
+    {{ sentence }}
+    <!-- <p class="article-content">{{ links }}</p> -->
+    {% for link in links %}
+        <sup class="reference"><a href="{{link[1]}}">&#91;{{link[0]}}&#93;</a></sup>
+    {% endfor %}
+{% endfor %}
+{% for links in links_list %}
+    {% for link in links %}
+        <p class="article-content">&#91;{{ link[0] }}&#93; {{link[1]}}</p>
+    {% endfor %}
+{% endfor %}
+
+<form action="/" method="post">
+    <div class="form-group">
+        {{ form.rating.label }}
+        {{ form.rating(min='1', max='10') }}
+        {{ form.submit(class="btn btn-info") }}
+        </div>
+    </td>
+</form>
+
+
+</html>
+{% endblock content %}
