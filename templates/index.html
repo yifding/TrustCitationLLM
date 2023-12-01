@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 {% extends "layout.html" %}
 {% block content %}
+
 
 <head>
     <meta charset="UTF-8">
@@ -9,7 +11,8 @@
     <title>ChatGPT Testing</title>
 </head>
 <body>
-    <form action="/" method="post">
+
+    <form action="/ask" method="post">
         <div class="form-group action="{{ url_for('ask') }}">
             {{ form.user_input.label(class="form-control-label") }}
             {% if form.user_input.errors %}
@@ -46,5 +49,5 @@
     {% endif %}
 
 </body>
-</html>
 {% endblock content %}
+</html>

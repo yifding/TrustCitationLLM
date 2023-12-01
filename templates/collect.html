@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 {% extends "layout.html" %}
 {% block content %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();   
+});
+</script>
+
 
 <p><strong>User Input:</strong> </p>
 <p> {{user_input}} </p>
@@ -10,16 +19,19 @@
     {{ sentence }}
     <!-- <p class="article-content">{{ links }}</p> -->
     {% for link in links %}
-        <sup class="reference"><a href="{{link[1]}}">&#91;{{link[0]}}&#93;</a></sup>
+        <sup class="reference"><a href="{{link[1]}}" data-placement="top" data-toggle="tooltip" title="{{link[1]}}"  >
+            &#91;{{link[0]}}&#93;        
+        </a></sup>
+          
     {% endfor %}
 {% endfor %}
-{% for links in links_list %}
+<!-- {% for links in links_list %}
     {% for link in links %}
-        <p class="article-content">&#91;{{ link[0] }}&#93; {{link[1]}}</p>
+        <p class="article-content"> &#91;{{ link[0] }}&#93; {{link[1]}}</p>
     {% endfor %}
-{% endfor %}
+{% endfor %} -->
 
-<form action="/" method="post">
+<form action="/ask" method="post">
     <div class="form-group">
         {{ form.rating.label }}
         {{ form.rating(min='1', max='10') }}

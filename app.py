@@ -103,7 +103,8 @@ def ask():
     print(ask_form)
     print(request.method)
     # if request.method == 'POST' and ask_form.validate_on_submit():
-    if request.method == 'POST' and ask_form.validate_on_submit() and ask_form.rating.data:
+
+    if request.method == 'POST' and ask_form.rating.data:
         print('b')
         session['user_time'] = time.time()
         # TODO: db to collect all the data.
@@ -136,7 +137,7 @@ def ask():
         flash('Your response has been collected!', 'success')
         return redirect(url_for('ask'))
 
-    elif request.method == 'POST' and ask_form.validate_on_submit() and ask_form.user_input.data:
+    elif request.method == 'POST' and ask_form.user_input.data:
         user_input = ask_form.user_input.data
         # You can customize the prompt or instructions based on your use case
         prompt = f"User: {user_input}\nChatGPT:"
