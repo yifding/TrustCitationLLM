@@ -78,3 +78,23 @@ body {
   .account-heading {
     font-size: 2.5rem;
   }
+
+  /* div#loading {
+    width: 35px;
+    height: 35px;
+    display: none;
+    background: url(/static/Ajax_loader_metal_512.gif) no-repeat;
+    cursor: wait;
+  } */
+
+  div#content {
+    display: none;
+    }
+
+  div#loading {
+    width: 35px;
+    height: 35px;
+    display: none;
+    background: url(/static/Ajax_loader_metal_512.gif) no-repeat;
+    cursor: wait;
+    }

@@ -11,6 +11,12 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+    function outputUpdate(age) {
+        document.querySelector('#selected-rating').value = age;
+    }
+    </script>
+
 
 <p><strong>User Input:</strong> </p>
 <p> {{user_input}} </p>
@@ -30,14 +36,14 @@ $(document).ready(function(){
         <p class="article-content"> &#91;{{ link[0] }}&#93; {{link[1]}}</p>
     {% endfor %}
 {% endfor %} -->
-
-<form action="/ask" method="post">
-    <div class="form-group">
-        {{ form.rating.label }}
-        {{ form.rating(min='1', max='10') }}
+<br>
+<form class="gLFyf gsfi" jsaction="paste:puy29d;" maxlength="2048" name="q" type="text" aria-autocomplete="both" aria-haspopup="false" autocapitalize="off" autocomplete="off" autocorrect="off" autofocus="" role="combobox" spellcheck="false" title="Pesquisar" value="" aria-label="Pesquisar" action="/ask" method="post">
+    <div class="form-group" autocomplete="off">
+        {{ form.rating.label }} <br>
+        {{ form.rating(min='0', max='10', value='5', oninput="outputUpdate(value)") }}
+         <output for="rating" id="selected-rating">{{ form.rating.data }}</output><br>
         {{ form.submit(class="btn btn-info") }}
-        </div>
-    </td>
+    </div>
 </form>
 
 

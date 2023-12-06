@@ -95,17 +95,44 @@ def home():
 def consent():
     return render_template('consent.html')
 
+@app.route("/collect", methods=['GET', 'POST'])
+def collect():
+    ask_form = AskForm()
+    # You can customize the prompt or instructions based on your use case
+    prompt = f"User: {session['user_input']}\nChatGPT:"
+
+    # Make a request to the OpenAI API
+    response = openai.Completion.create(
+        engine="text-davinci-003",  # You can choose a different engine
+        prompt=prompt,
+        max_tokens=150,
+    )
+
+    # Extract the model's reply from the API response
+    chatgpt_reply = response.choices[0].text.strip()
+
+    # Add citations.
+    num_citations, chunck_list, sentences, links_list = add_citation(chatgpt_reply)
+
+    session['chatgpt_time'] = time.time()
+    # chatgpt_reply = zip(sentences, links_list)
+    chatgpt_reply=zip(sentences, links_list)
+
+    # store intermediate variables as session variables
+    session['num_citations'] = num_citations - 1
+    # session['user_input'] = user_input
+    user_input = session['user_input']
+    session['sentences'] = sentences
+    session['links_list'] = links_list
+
+    return render_template('collect.html', form=ask_form, user_input=user_input, chatgpt_reply=chatgpt_reply, links_list=links_list)
+
+
 # @app.route("/", methods=['GET', 'POST'])
 @app.route('/ask', methods=['GET', 'POST'])
 def ask():
-    print('a')
     ask_form = AskForm() 
-    print(ask_form)
-    print(request.method)
-    # if request.method == 'POST' and ask_form.validate_on_submit():
-
     if request.method == 'POST' and ask_form.rating.data:
-        print('b')
         session['user_time'] = time.time()
         # TODO: db to collect all the data.
         # stats the citation number.
@@ -139,34 +166,11 @@ def ask():
 
     elif request.method == 'POST' and ask_form.user_input.data:
         user_input = ask_form.user_input.data
-        # You can customize the prompt or instructions based on your use case
-        prompt = f"User: {user_input}\nChatGPT:"
-
-        # Make a request to the OpenAI API
-        response = openai.Completion.create(
-            engine="text-davinci-003",  # You can choose a different engine
-            prompt=prompt,
-            max_tokens=150,
-        )
-
-        # Extract the model's reply from the API response
-        chatgpt_reply = response.choices[0].text.strip()
-
-        # Add citations.
-        num_citations, chunck_list, sentences, links_list = add_citation(chatgpt_reply)
-
-        session['chatgpt_time'] = time.time()
-        # chatgpt_reply = zip(sentences, links_list)
-        chatgpt_reply=zip(sentences, links_list)
-
-        # store intermediate variables as session variables
-        session['num_citations'] = num_citations - 1
+        if session.get('user_input', '') == user_input:
+            redirect(url_for('ask'))
         session['user_input'] = user_input
-        session['sentences'] = sentences
-        session['links_list'] = links_list
-
-        # return render_template('collect.html', user_input=user_input, sentences=sentences, links_list=links_list)
-        return render_template('collect.html', form=ask_form, user_input=user_input, chatgpt_reply=chatgpt_reply, links_list=links_list)
+        # return waiting page.
+        return render_template('waiting.html')
 
     else:
         # check user_id existing in the session variables
@@ -175,10 +179,14 @@ def ask():
             session['user_id'] = uuid.uuid4()
             session['question_num'] = 1
         else:
-            session['question_num'] += 1
-
+            # use queary question to obtain the question_num
+            session['question_num'] = len(QuestionAnswer.query.filter_by(user_id=str(session['user_id'])).all()) + 1
+        question_num = session['question_num']
         session['start_time'] = time.time()
-        return render_template('index.html', form=ask_form)
+        if question_num > MAX_QUESTION_NUM:
+            session['result_code']= str(session['user_id'])
+            return render_template('finish.html')
+        return render_template('index.html', form=ask_form, question_num=question_num, total_question_num=MAX_QUESTION_NUM)
 
 
 if __name__ == '__main__':

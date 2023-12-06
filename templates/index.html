@@ -1,18 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 {% extends "layout.html" %}
 {% block content %}
-
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChatGPT Testing</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">// <![CDATA[
+        function loading(){
+            $("#loading").show();
+            $("#content").hide();       
+        }
+    // ]]></script>
 </head>
+
+<style>
+div#loading {
+width: 35px;
+height: 35px;
+display: none;
+background: url(static/Ajax_loader_metal_512.gif) no-repeat;
+cursor: wait;
+}
+</style>
+
 <body>
 
-    <form action="/ask" method="post">
+    <div class="alert alert-primary" role="alert">
+        Current question is the {{question_num}} of {{total_question_num}} quetions.
+    </div>
+
+    <!-- <form action="/ask" method="post" autocomplete="off"> -->
+    <form class="gLFyf gsfi" jsaction="paste:puy29d;" maxlength="2048" name="q" type="text" aria-autocomplete="both" aria-haspopup="false" autocapitalize="off" autocomplete="off" autocorrect="off" autofocus="" role="combobox" spellcheck="false" title="Pesquisar" value="" aria-label="Pesquisar" action="/ask" method="post">
         <div class="form-group action="{{ url_for('ask') }}">
             {{ form.user_input.label(class="form-control-label") }}
             {% if form.user_input.errors %}
@@ -25,9 +48,11 @@
             {% else %}
                 {{ form.user_input(class="form-control form-control-lg mb-2") }}
             {% endif %}
-                {{ form.submit(class="btn btn-info" ) }}
+            
+            {{ form.submit(class="btn btn-info") }} 
+            <!-- <input type="submit" name="anything_submit" onclick="loading();"> -->
+            <!-- {{ form.submit(class="btn btn-info" ) }} -->
             </div>
-        </td>
     </form>
 
     {% if chatgpt_reply %}
