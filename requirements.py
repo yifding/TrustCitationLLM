@@ -3,7 +3,7 @@ blinker==1.5
 certifi==2021.5.30
 charset-normalizer==2.0.12
 click==8.0.4
-dataclasses==0.8
+# dataclasses==0.8
 dnspython==2.2.1
 email-validator==1.3.1
 Flask==1.0
