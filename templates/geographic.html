@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="alert alert-success" role="alert">
+Thank you for helping us with our study. Please answer a couple of more geographic questions before getting the MTurk generated code. 
+</div>
+
+<div class="alert alert-danger" role="alert">
+    Invalid or empty answer will cause invalid payment code.
+</div>
+
+<form class="gLFyf gsfi" jsaction="paste:puy29d;" maxlength="2048" name="q" type="text" aria-autocomplete="both" aria-haspopup="false" autocapitalize="off" autocomplete="off" autocorrect="off" autofocus="" role="combobox" spellcheck="false" title="" value="" aria-label="" action="/geographic" method="post">
+    <div class="form-group" autocomplete="off">
+        {{ form.gender.label }} <br>
+        {{ form.gender() }}
+    </div>
+    <div class="form-group" autocomplete="off">
+        {{ form.age.label }} <br>
+        {{ form.age() }}
+    </div>
+    <div class="form-group" autocomplete="off">
+        {{ form.residence.label }} <br>
+        {{ form.residence() }}
+    </div>
+    <div class="form-group" autocomplete="off">
+        {{ form.education.label }} <br>
+        {{ form.education() }}
+    </div>
+    <div class="form-group" autocomplete="off">
+        {{ form.race.label }} <br>
+        {{ form.race() }}
+    </div>
+    <div class="form-group" autocomplete="off">
+        {{ form.political_orientation.label }} <br>
+        {{ form.political_orientation() }}
+    </div>
+    <div class="form-group" autocomplete="off">
+        {{ form.chatgpt_heard.label }} <br>
+        {{ form.chatgpt_heard() }}
+    </div>
+    {{ form.submit(class="btn btn-info") }}
+
+</form>
+
+
+
+
+</html>
+{% endblock content %}

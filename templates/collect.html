@@ -40,7 +40,7 @@ $(document).ready(function(){
 <form class="gLFyf gsfi" jsaction="paste:puy29d;" maxlength="2048" name="q" type="text" aria-autocomplete="both" aria-haspopup="false" autocapitalize="off" autocomplete="off" autocorrect="off" autofocus="" role="combobox" spellcheck="false" title="" value="" aria-label="" action="/ask" method="post">
     <div class="form-group" autocomplete="off">
         {{ form.rating.label }} <br>
-        {{ form.rating(min='0', max='10', value='5', oninput="outputUpdate(value)") }}
+        {{ form.rating(min='0', max='10', oninput="outputUpdate(value)") }}
          <output for="rating" id="selected-rating">{{ form.rating.data }}</output><br>
         {{ form.submit(class="btn btn-info") }}
     </div>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "layout.html" %}
+{% block content %}
+
+<p> Following is a short clip showing the process of the annotation process.</p>
+You are first given a bracket to input a factual question (example: how far it is from moon to earth?)
+After clicking submit, you are able to see the generated answer with citations. You are required to give trust worthy scores given
+generated text and citations.
+<br>
+<br>
+
+<img style="border: black; border-style: solid;" src="static/instruction.gif" width="100%" height="80%">
+
+<br>
+<ul class="list-group">
+    <a id="next" href="{{ url_for('consent') }}" class="list-group-item list-group-item-action text-right" style="font-size: xx-large"> --> Consent <span class="fa fa-arrow-right"></span></a>
+    <a id="prev" href="{{ url_for('home') }}" class="list-group-item list-group-item-action text-left" style="font-size: xx-large"><span class="fa fa-arrow-left"></span> <-- Introduction</a>
+</ul>
+{% endblock %}

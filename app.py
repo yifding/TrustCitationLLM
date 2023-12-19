@@ -10,7 +10,7 @@ import openai
 import requests
 from nltk.tokenize import sent_tokenize
 from flask_login import current_user
-from form import AskForm, CollectForm
+from form import AskForm, CollectForm, DemoForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
@@ -44,6 +44,17 @@ class Citation(db.Model):
     sentence_index = db.Column(db.Integer, nullable=False)
     hyperlink = db.Column(db.Text, nullable=False)
     qa_id = db.Column(db.Integer, db.ForeignKey('question_answer.id'), nullable=False)
+
+class GeoGraphic(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(20))
+    gender = db.Column(db.String(20))
+    age = db.Column(db.String(20))
+    residence = db.Column(db.String(20))
+    education = db.Column(db.String(20))
+    race = db.Column(db.String(20))
+    political_orientation = db.Column(db.String(20))
+    chatgpt_heard = db.Column(db.String(20))
 
 db.create_all()
 
@@ -90,6 +101,10 @@ def add_citation(text):
 @app.route("/home", methods=['GET', 'POST'])
 def home():
     return render_template('home.html')
+
+@app.route("/instruction", methods=['GET', 'POST'])
+def instruction():
+    return render_template('instruction.html')
 
 @app.route("/consent", methods=['GET', 'POST'])
 def consent():
@@ -185,8 +200,40 @@ def ask():
         session['start_time'] = time.time()
         if question_num > MAX_QUESTION_NUM:
             session['result_code']= str(session['user_id'])
+            if session.get('chatgpt_heard', '') == '':
+                return redirect(url_for('geographic'))
             return render_template('finish.html')
         return render_template('index.html', form=ask_form, question_num=question_num, total_question_num=MAX_QUESTION_NUM)
+
+
+@app.route('/geographic', methods=['GET', 'POST'])
+def geographic():
+    demo_form = DemoForm()
+    if request.method == 'POST':
+        session['chatgpt_heard'] = demo_form.chatgpt_heard.data
+
+        p = GeoGraphic.query.filter_by(user_id=str(session['user_id'])).all()
+        for pp in p:
+            db.session.delete(pp)
+        db.session.commit()
+
+        geo_graphic = GeoGraphic(
+            user_id=str(session['user_id']),
+            gender = demo_form.gender.data,
+            age = demo_form.age.data,
+            residence = demo_form.residence.data,
+            education = demo_form.education.data,
+            race = demo_form.race.data,
+            political_orientation = demo_form.political_orientation.data,
+            chatgpt_heard=demo_form.chatgpt_heard.data,
+        )
+
+        db.session.add(geo_graphic)
+        db.session.commit()
+
+        return redirect(url_for('ask'))
+    else:
+        return render_template('geographic.html', form=demo_form)
 
 
 if __name__ == '__main__':
