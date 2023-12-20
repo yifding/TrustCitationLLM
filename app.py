@@ -7,6 +7,7 @@ import uuid
 import time
 import random
 import openai
+# from openai import OpenAI
 import requests
 from nltk.tokenize import sent_tokenize
 from flask_login import current_user
@@ -18,6 +19,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
 
 openai.api_key = "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"
+# client = OpenAI()
 scaleserp_api_key='902001EE928446608F1DFDA760750BFC',
 
 MAX_QUESTION_NUM = 10
@@ -117,17 +119,26 @@ def collect():
     prompt = f"User: {session['user_input']}\nChatGPT:"
 
     # Make a request to the OpenAI API
-    response = openai.Completion.create(
-        engine="text-davinci-003",  # You can choose a different engine
-        prompt=prompt,
-        max_tokens=150,
-    )
+    try:
+        response = openai.Completion.create(
+            model="gpt-3.5-turbo-instruct",  # You can choose a different engine
+            prompt=prompt,
+            max_tokens=150,
+        )
+    # response = openai_output["choices"][0]["message"]['content']
+    except:
+        flash('ChatGPT encounter issues, please try again!', 'warning')
+        return redirect(url_for('ask'))
 
     # Extract the model's reply from the API response
     chatgpt_reply = response.choices[0].text.strip()
 
     # Add citations.
-    num_citations, chunck_list, sentences, links_list = add_citation(chatgpt_reply)
+    try:
+        num_citations, chunck_list, sentences, links_list = add_citation(chatgpt_reply)
+    except:
+        flash('ChatGPT encounter another issue, please try again!', 'warning')
+        return redirect(url_for('ask'))
 
     session['chatgpt_time'] = time.time()
     # chatgpt_reply = zip(sentences, links_list)

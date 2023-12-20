@@ -5,40 +5,33 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-            <h2><strong>Trustworthy Scores on Generative Model Outputs with Citations</strong></h2>
+            <h2><strong>How much do you trust ChatGPT?</strong></h2>
             <br>
-            <h3><u>Description</u></h3>
-            <h4>In this HIT assignment you will be asked to ask factual question and give feedback on generated answer. 
-                Your task will consist of two parts. First, you are required to input a factual question. The second is to give trustworthy scores (0-10) on the 
-                generated anwer. By participating, you will be helping research into generative models.
+            <p><u>Description</u></p>
+            <p>In this HIT, your job is to ask any question to ChatGPT and then judge how much you trust the response. 
+                This task consists of two parts: (1) You enter a question. (2) You provide a trust-score (0-10) about the response. 
+		By participating, you will be helping research into AI systems.
 
-            </h4>
+            </p>
             <br>
-            <h3><u>Length</u></h3>
-            <h4>There are 10 questions in this HIT assignment, each group will take around 10 to 30 seconds to complete.
-            </h4>
+            <p><u>Length</u></p>
+            <p>There are 10 questions, each question will take around 20 to 30 seconds to complete.
+            </p>
             <br>
-            <h3><u>Completion</u></h3>
-            <h4>When the end of the HIT assignment has been reached, a unique survey code will be provided to you.
-                This survey code should be submitted to the Mechanical Turk HIT page which provided the link to this HIT assignment.
-            </h4>
+            <p><u>Completion</u></p>
+            <p>At the end of this HIT, a unique code will be provided. This survey code should be submitted to Mechanical Turk which provided the link to this HIT.
+            </p>
             <br>
-            <h3><u>Approval Criteria</u></h3>
-            <h4>During the HIT assignment control questions will be presented throughout.
-                By correctly verifying and annotating the control questions you will ensure that your HIT is approved.
-                <b>You must correctly answer some of the control questions to receive approval for completing this HIT assignment.</b>
-            </h4>
-            <br>
-            <h3><u>Rejection Criteria</u></h3>
-            <h4>Multiple submissions of an identical survey code. Too many non-sense or repeated questions, too many default trustworthy scores.
-            </h4>
+            <p><u>Approval Criteria</u></p>
+	    <p>You may complete this HIT multiple times. However, repeated, inappropriate, or apathetic questions will result in a HIT failure. <b>Have fun with it.</b>
+            </p>
         </div>
     </div>
 </div>
 
 <br>
 <ul class="list-group">
-    <a id="next" href="{{ url_for('instruction') }}" class="list-group-item list-group-item-action text-middle" style="font-size: xx-large"> ---> Introduction <span class="fa fa-arrow-right"></span></a>
+    <a id="next" href="{{ url_for('instruction') }}" class="list-group-item list-group-item-action text-middle" style="font-size: large"> ---> Instruction <span class="fa fa-arrow-right"></span></a>
 </ul>
 
 {% endblock %}

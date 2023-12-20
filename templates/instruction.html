@@ -3,18 +3,18 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<p> Following is a short clip showing the process of the annotation process.</p>
-You are first given a bracket to input a factual question (example: how far it is from moon to earth?)
-After clicking submit, you are able to see the generated answer with citations. You are required to give trust worthy scores given
-generated text and citations.
+<p> Here is a short clip showing an example HIT.</p>
+
+<p>The first step is to ask a question (any question) to ChatGPT (example: How far it is from moon to earth?)
+After clicking Submit, you will see a response from ChatGPT. Then, you are asked to provide a trust score to the generated answer.</p>
 <br>
 <br>
 
-<img style="border: black; border-style: solid;" src="static/instruction.gif" width="100%" height="80%">
+<img style="border: black; border-style: solid;" src="static/instruction.gif" width="100%"/>
 
 <br>
 <ul class="list-group">
-    <a id="next" href="{{ url_for('consent') }}" class="list-group-item list-group-item-action text-right" style="font-size: xx-large"> --> Consent <span class="fa fa-arrow-right"></span></a>
-    <a id="prev" href="{{ url_for('home') }}" class="list-group-item list-group-item-action text-left" style="font-size: xx-large"><span class="fa fa-arrow-left"></span> <-- Introduction</a>
+    <a id="next" href="{{ url_for('consent') }}" class="list-group-item list-group-item-action text-right" style="font-size: large"> --> Consent <span class="fa fa-arrow-right"></span></a>
+    <a id="prev" href="{{ url_for('home') }}" class="list-group-item list-group-item-action text-left" style="font-size: large"><span class="fa fa-arrow-left"></span> <-- Introduction</a>
 </ul>
 {% endblock %}
