@@ -25,7 +25,7 @@ $(document).ready(function(){
     {{ sentence }}
     <!-- <p class="article-content">{{ links }}</p> -->
     {% for link in links %}
-        <sup class="reference"><a href="{{link[1]}}" data-placement="top" data-toggle="tooltip" title="{{link[1]}}"  >
+        <sup class="reference"><a href="{{link[1]}}" target="_blank" data-placement="top" data-toggle="tooltip" title="{{link[1]}}"  >
             &#91;{{link[0]}}&#93;        
         </a></sup>
           
