@@ -18,7 +18,7 @@ app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
 
-openai.api_key = "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"
+openai.api_key = "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"
 # client = OpenAI()
 scaleserp_api_key='902001EE928446608F1DFDA760750BFC',
 
@@ -39,7 +39,7 @@ class QuestionAnswer(db.Model):
     gpt_time_elapsed = db.Column(db.Integer)
     user_time_elapsed = db.Column(db.Integer)
     citations = db.relationship('Citation', backref='qa', lazy=True)
-
+    random_citations = db.Column(db.Integer)
 
 class Citation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -61,15 +61,13 @@ class GeoGraphic(db.Model):
 db.create_all()
 
 
-def add_citation(text):
+def add_citation(text, chunck=7, random_citations=0):
     sentences = sent_tokenize(text)
     # keep the first five sentences
 
-    sentences = sentences[:5]
-    chuncks = [0, 1, 4, 7, 10]
-    # roll the dice first time. random.randint includes both sides
-    chunck_index = random.randint(0, 4)
-    chunck = chuncks[chunck_index]
+    # sentences = sentences[:5]
+    sentences = sentences[:3]
+
     # roll the dice second time, to grasp the total number.
     chunck_list = []
     remain_num = chunck
@@ -78,7 +76,7 @@ def add_citation(text):
         chunck_list.append(cur_num)
         remain_num -= cur_num
     
-    chunck_list.append(min(5, remain_num))
+    chunck_list.append(remain_num)
 
     links_list = []
     tmp_link_index = 1
@@ -96,6 +94,18 @@ def add_citation(text):
                 tmp_link_index += 1
         links_list.append(links)
 
+    if random_citations:
+        length = len(links_list)
+        tmp_citations = Citation.query.all()
+        random.shuffle(tmp_citations)
+        tmp_citations = [tmp_citation.hyperlink for tmp_citation in tmp_citations[:10]]
+        new_links_list = []
+        for tmp_links in links_list:
+            new_tmp_links = []
+            for (tmp_link_index, _) in tmp_links:
+                new_tmp_links.append([tmp_link_index, tmp_citations.pop(-1)])
+            new_links_list.append(new_tmp_links)
+        links_list = new_links_list
     return tmp_link_index, chunck_list, sentences, links_list
 
 
@@ -133,9 +143,18 @@ def collect():
     # Extract the model's reply from the API response
     chatgpt_reply = response.choices[0].text.strip()
 
+    # roll the dice first time. random.randint includes both sides
+    if 'chunck' not in session:
+        chuncks = [0, 1, 4, 7, 10]
+        chunck_index = random.randint(0, 4)
+        chunck = chuncks[chunck_index]
+        session['chunck'] = chunck
+        session['random_citations'] = random.randint(0, 1)
+
     # Add citations.
     try:
-        num_citations, chunck_list, sentences, links_list = add_citation(chatgpt_reply)
+        num_citations, chunck_list, sentences, links_list = add_citation(chatgpt_reply, session['chunck'], session['random_citations'])
+        # num_citations, chunck_list, sentences, links_list = add_citation(chatgpt_reply, 7, 1)
     except:
         flash('ChatGPT encounter another issue, please try again!', 'warning')
         return redirect(url_for('ask'))
@@ -173,6 +192,7 @@ def ask():
             start_time=session['start_time'],
             gpt_time_elapsed=session['chatgpt_time'] - session['start_time'],
             user_time_elapsed=session['user_time'] - session['chatgpt_time'],
+            random_citations=session['random_citations'],
         )
 
         db.session.add(question_answer)
