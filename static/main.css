@@ -98,3 +98,9 @@ body {
     background: url(/static/Ajax_loader_metal_512.gif) no-repeat;
     cursor: wait;
     }
+
+  textarea {
+    height: 200px;
+    width: 200px;
+    display: block;
+  }

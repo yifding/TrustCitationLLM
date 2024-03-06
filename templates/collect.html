@@ -15,7 +15,19 @@ $(document).ready(function(){
     function outputUpdate(age) {
         document.querySelector('#selected-rating').value = age;
     }
-    </script>
+</script>
+
+<script>
+    function mouselog(event) {
+    let d = new Date();
+    text.value += `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()} | ${event.type} [target: ${event.target.href}]\n`.replace(/(:|^)(\d\D)/, '$10$2');
+    text.scrollTop = text.scrollHeight;
+    document.getElementById("mytext").value = text.value;
+    // const p = text.value;
+    // $.post( "/ask", {
+    //     "javascript_data": p});
+    }
+</script>
 
 
 <p><strong>User Input:</strong> </p>
@@ -25,19 +37,31 @@ $(document).ready(function(){
     {{ sentence }}
     <!-- <p class="article-content">{{ links }}</p> -->
     {% for link in links %}
-        <sup class="reference"><a href="{{link[1]}}" target="_blank" data-placement="top" data-toggle="tooltip" title="{{link[1]}}"  >
+        <sup class="reference"><a href="{{link[1]}}" onmouseover="mouselog(event)" target="_blank" data-placement="top" data-toggle="tooltip" title="{{link[1]}}"  >
             &#91;{{link[0]}}&#93;        
         </a></sup>
           
     {% endfor %}
 {% endfor %}
+
+<textarea id="text" style="display:none;"></textarea>
+<!-- <input type="button" onclick="text.value=''" value="Clear"> -->
+
 <!-- {% for links in links_list %}
     {% for link in links %}
         <p class="article-content"> &#91;{{ link[0] }}&#93; {{link[1]}}</p>
     {% endfor %}
 {% endfor %} -->
+
+
+<form id='exampleForm' method = 'post' action='#' style='display:none'>
+    <input id='exInput' type='text' name='exInput'>
+</form>
+
+
 <br>
 <form class="gLFyf gsfi" jsaction="paste:puy29d;" maxlength="2048" name="q" type="text" aria-autocomplete="both" aria-haspopup="false" autocapitalize="off" autocomplete="off" autocorrect="off" autofocus="" role="combobox" spellcheck="false" title="" value="" aria-label="" action="/ask" method="post">
+    <input type="text" name="user" id="mytext" style="display:none;">
     <div class="form-group" autocomplete="off">
         {{ form.rating.label }} <br>
         {{ form.rating(min='0', max='10', oninput="outputUpdate(value)") }}

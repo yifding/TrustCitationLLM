@@ -40,6 +40,7 @@ class QuestionAnswer(db.Model):
     user_time_elapsed = db.Column(db.Integer)
     citations = db.relationship('Citation', backref='qa', lazy=True)
     random_citations = db.Column(db.Integer)
+    hook_overs = db.Column(db.Text)
 
 class Citation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -182,6 +183,7 @@ def ask():
         # TODO: db to collect all the data.
         # stats the citation number.
 
+
         question_answer = QuestionAnswer(
             user_id=str(session['user_id']),
             rating=ask_form.rating.data,
@@ -193,6 +195,7 @@ def ask():
             gpt_time_elapsed=session['chatgpt_time'] - session['start_time'],
             user_time_elapsed=session['user_time'] - session['chatgpt_time'],
             random_citations=session['random_citations'],
+            hook_overs=request.form['user'],
         )
 
         db.session.add(question_answer)
@@ -208,6 +211,8 @@ def ask():
                 db.session.add(citation)
                 db.session.commit()
         flash('Your response has been collected!', 'success')
+        # flash(request.form['user'], 'success')
+
         return redirect(url_for('ask'))
 
     elif request.method == 'POST' and ask_form.user_input.data:
