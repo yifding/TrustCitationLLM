@@ -146,8 +146,8 @@ def collect():
 
     # roll the dice first time. random.randint includes both sides
     if 'chunck' not in session:
-        chuncks = [0, 1, 4, 7, 10]
-        chunck_index = random.randint(0, 4)
+        chuncks = [0, 1, 5]
+        chunck_index = random.randint(0, 2)
         chunck = chuncks[chunck_index]
         session['chunck'] = chunck
         session['random_citations'] = random.randint(0, 1)
