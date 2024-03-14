@@ -103,8 +103,8 @@ def add_citation(text, chunck=7, random_citations=0):
         new_links_list = []
         for tmp_links in links_list:
             new_tmp_links = []
-            for (tmp_link_index, _) in tmp_links:
-                new_tmp_links.append([tmp_link_index, tmp_citations.pop(-1)])
+            for (tmp_tmp_link_index, _) in tmp_links:
+                new_tmp_links.append([tmp_tmp_link_index, tmp_citations.pop(-1)])
             new_links_list.append(new_tmp_links)
         links_list = new_links_list
     return tmp_link_index, chunck_list, sentences, links_list
