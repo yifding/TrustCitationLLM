@@ -1,13 +1,9 @@
-# flask_chatgpt_response
-repository for flask_chatgpt_response project
-
-
-# In_Context_EL
+# Citations and Trust in LLM Generated Responses
 This is our coding implementation for the paper:
 
 ```bibtex
 @inproceedings{ding2024chatel,
- title={Citations and Trust in LLM Generated Answers},
+ title={Citations and Trust in LLM Generated Responses},
  author={Yifan Ding, Matthew Facciani, Ellen Joyce, Amrit Poudel, Sanmitra Bhattacharya, Balaji Veeramani, Sal Aguinaga, Tim Weninger},
  booktitle={AAAI},
  year={2025}
