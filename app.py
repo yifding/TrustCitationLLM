@@ -18,7 +18,7 @@ app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
 
-openai.api_key = "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"
+openai.api_key = "your openai api key"
 # client = OpenAI()
 scaleserp_api_key='902001EE928446608F1DFDA760750BFC',
 
